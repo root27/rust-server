@@ -24,7 +24,10 @@ async fn json_response () -> impl Responder {
 }
 
 async fn json_request (user: web::Json<User>) -> impl Responder {
-    HttpResponse::Ok().json(user.0)
+    HttpResponse::Ok().json(json!({
+        "name": user.name,
+        
+    }))
 }
 
 
@@ -35,6 +38,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .route("/", web::get().to(index))
             .route("/json", web::get().to(json_response))
+            .route("/json", web::post().to(json_request))
     })
     .bind(("127.0.0.1", 8080))?
     .run()
