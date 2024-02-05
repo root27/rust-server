@@ -44,11 +44,6 @@ async fn main() -> std::io::Result<()> {
     let app_data = web::Data::new(db);
   
 
-
-
-
-
-
     HttpServer::new(move || {
         App::new()
             .app_data(app_data.clone())
