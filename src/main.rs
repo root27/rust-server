@@ -1,7 +1,7 @@
 
 mod models;
 
-use actix_web::{web, App, HttpServer, Responder, HttpResponse};
+use actix_web::{middleware::Logger,web, App, HttpServer, Responder, HttpResponse};
 use serde_json::json; // Add this import
 use models::User; // Add this import
 use models::Response;
@@ -37,6 +37,7 @@ async fn json_request (user: web::Json<User>) -> impl Responder{
         "message": "Name is valid"
     }))
 
+
     
    }
     else {
@@ -48,11 +49,14 @@ async fn json_request (user: web::Json<User>) -> impl Responder{
 }
 
 
+
 #[actix_web::main]
 
 async fn main() -> std::io::Result<()> {
+
     HttpServer::new(|| {
         App::new()
+            .wrap(Logger::new(""))
             .route("/", web::get().to(index))
             .route("/json", web::get().to(json_response))
             .route("/json", web::post().to(json_request))
