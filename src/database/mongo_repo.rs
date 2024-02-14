@@ -4,6 +4,7 @@ use std::str::FromStr;
 use crate::models::User;
 use crate::models::UpdateRequest;
 
+use mongodb::results::DeleteResult;
 use mongodb::{bson::{doc, extjson::de::Error}, results::{InsertOneResult, UpdateResult}, Client, Collection};
 use mongodb::bson::oid::ObjectId;
 
@@ -93,12 +94,40 @@ impl MongoRepo {
 
         }
     
+    }
 
-      
+
+    pub async fn delete_user(&self, id: String) -> Result<DeleteResult, Error> {
+
+        let object_id = ObjectId::from_str(&id);
+
+        match object_id {
+
+            Ok(id) => {
+                let filter = doc!{"_id": id};
+
+                let result = self.col.delete_one(filter, None).await
+                .expect("Failed to delete");
+
+                Ok(result)
+
+
+            }
+
+
+            Err(e) => {
+                Err(Error::from(e))
+            }
+
+
+
+
+
+        }
+
+
 
         
-
-
 
 
     }

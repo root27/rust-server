@@ -26,3 +26,6 @@ pub struct UpdateRequest {
     pub name: String,
     pub address: String
 }
+
+
+

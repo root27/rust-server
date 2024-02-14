@@ -51,6 +51,29 @@ async fn update_user(db: web::Data<MongoRepo>, data: web::Json<UpdateRequest>, i
 }
 
 
+async fn delete_user(db:web::Data<MongoRepo>, id: web::Path<String>) -> impl Responder {
+
+
+    let result = db.delete_user(id.into_inner()).await;
+
+    match result {
+
+        Ok(_) => HttpResponse::Ok().json(Response {
+            message: "User deleted successfully".into()
+        }),
+
+
+        Err(_) => HttpResponse::BadRequest().json(Response {
+            message: "Failed to delete!!!".into()
+        })
+
+
+    }
+
+
+}
+
+
 
 
 #[actix_web::main]
@@ -70,6 +93,7 @@ async fn main() -> std::io::Result<()> {
             .route("/create_user", web::post().to(create_user))
             .route("/get_user/{name}", web::get().to(get_user))
             .route("/update_user/{id}", web::post().to(update_user))
+            .route("/delete/{id}",web::get().to(delete_user))
            
     })
     .bind(("127.0.0.1", 8080))?
