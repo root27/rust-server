@@ -3,6 +3,7 @@ mod models;
 mod database;
 
 use actix_web::{middleware::Logger,web, App, HttpServer, Responder, HttpResponse};
+use models::models::UpdateRequest;
 // use serde_json::json; // Add this import
 use models::User; // Add this import
 use models::Response;
@@ -31,6 +32,24 @@ async fn get_user(db: web::Data<MongoRepo>, name: web::Path<String>) -> impl Res
 }
 
 
+async fn update_user(db: web::Data<MongoRepo>, data: web::Json<UpdateRequest>, id: web::Path<String>) -> impl Responder {
+
+    let result = db.update_user(data.into_inner(), id.into_inner()).await;
+
+
+    match result {
+        Ok(_) => HttpResponse::Ok().json(Response{
+            message: "Updated successfully".into()
+        }),
+
+        Err(_) => HttpResponse::BadRequest().json(Response {
+            message: "Failed to update!!".into()
+        })
+    }
+
+
+}
+
 
 
 
@@ -50,6 +69,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(Logger::new(""))
             .route("/create_user", web::post().to(create_user))
             .route("/get_user/{name}", web::get().to(get_user))
+            .route("/update_user/{id}", web::post().to(update_user))
            
     })
     .bind(("127.0.0.1", 8080))?

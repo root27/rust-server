@@ -1,7 +1,11 @@
 
-use crate::models::User;
-use mongodb::{bson::{doc, extjson::de::Error},Client, Collection, results::InsertOneResult};
+use std::str::FromStr;
 
+use crate::models::User;
+use crate::models::UpdateRequest;
+
+use mongodb::{bson::{doc, extjson::de::Error}, results::{InsertOneResult, UpdateResult}, Client, Collection};
+use mongodb::bson::oid::ObjectId;
 
 pub struct MongoRepo {
     col: Collection<User>
@@ -25,7 +29,7 @@ impl MongoRepo {
         let new_user = User {
             id: None,
             name: user.name,
-            age: user.age,
+            email: user.email,
             address: user.address
         };
 
@@ -52,6 +56,54 @@ impl MongoRepo {
 
 
     }
+
+
+    pub async fn update_user(&self, request: UpdateRequest, id: String) -> Result<UpdateResult, Error> {
+
+
+        let object_id = ObjectId::from_str(&id);
+        
+
+        match object_id {
+
+            Ok(object_id) => {
+                
+                let filter = doc!{"_id": object_id};
+
+                let options = doc! {
+                    "$set": {
+                        "name": request.name,
+                        "email": request.email,
+                        "address": request.address
+                    }
+                };
+
+                let result = self.col.update_one(filter,options,None).await
+        .expect("Failed to update");
+
+
+         Ok(result)
+
+
+            }
+
+            Err(e) => {
+                Err(Error::from(e))
+            }
+
+        }
+    
+
+      
+
+        
+
+
+
+
+    }
+
+
 }
     
 

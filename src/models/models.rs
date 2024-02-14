@@ -7,7 +7,7 @@ pub struct User {
     #[serde(rename = "_id", skip_serializing_if = "Option::is_none")]
     pub id : Option<ObjectId>,
     pub name: String,
-    pub age: u8,
+    pub email: String,
     pub address: String,
 }
 
@@ -18,3 +18,11 @@ pub struct Response {
     pub message: String
 }
 
+
+#[derive(Deserialize,Serialize)]
+
+pub struct UpdateRequest {
+    pub email: String,
+    pub name: String,
+    pub address: String
+}
