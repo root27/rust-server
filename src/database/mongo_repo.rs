@@ -12,7 +12,6 @@ use mongodb::{bson::{doc, extjson::de::Error}, results::{InsertOneResult, Update
 use mongodb::bson::oid::ObjectId;
 
 
-use futures::TryStreamExt;
 
 pub struct MongoRepo {
     col: Collection<User>
