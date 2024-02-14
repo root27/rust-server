@@ -8,6 +8,7 @@ use models::models::UpdateRequest;
 use models::User; // Add this import
 use models::Response;
 
+use serde_json::json;
 
 use database::mongo_repo::MongoRepo; // Add this import
 
@@ -70,6 +71,35 @@ async fn delete_user(db:web::Data<MongoRepo>, id: web::Path<String>) -> impl Res
 
     }
 
+
+}
+
+
+async fn get_all(db: web::Data<MongoRepo>) -> impl Responder {
+
+    let result = db.get_all().await;
+
+    match result {
+
+        Ok(result) => {
+
+            HttpResponse::Ok().json(json!({
+
+                "data": result
+            })
+            
+        )
+        }
+
+        Err(_) => {
+
+            HttpResponse::BadRequest().json(Response{
+                message: "Failed to fetch data".into()
+            })
+
+        }
+
+    } 
 
 }
 

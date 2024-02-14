@@ -1,15 +1,18 @@
 
 use std::str::FromStr;
 
+use std::error::Error as StdError;
+
 use crate::models::User;
 use crate::models::UpdateRequest;
 
+use futures::StreamExt;
 use mongodb::results::DeleteResult;
 use mongodb::{bson::{doc, extjson::de::Error}, results::{InsertOneResult, UpdateResult}, Client, Collection};
 use mongodb::bson::oid::ObjectId;
 
 
-use futures::stream::StreamExt;
+use futures::TryStreamExt;
 
 pub struct MongoRepo {
     col: Collection<User>
@@ -62,24 +65,40 @@ impl MongoRepo {
     }
 
 
-    pub async fn get_all(&self) -> Result<Vec<User>, Error> {
+    pub async fn get_all(&self) -> Result<Vec<User>, Box<dyn StdError>> {
 
         let mut cursor = self.col.find(None, None).await;
 
 
-        let users = Vec::new();
+        let mut users = Vec::new();
 
+        match cursor {
 
-        while let Some(doc) = cursor.next().await {
+   
+            Ok(mut cursor) => {
+                while let Some(result) = cursor.next().await {
+                    match result {
+                        Ok(user) => {
+                            users.push(user);
+                        }
+                        Err(e) => {
+                            return Err(Box::new(e));
+                        }
+                    }
+                }
+                Ok(users)
+            }
+            Err(e) => {
+               
+                Err(Box::new(e))
+            }
 
-            users.push(doc)
-            
         }
+        
 
         
 
 
-        Ok(users)
 
     }
 
