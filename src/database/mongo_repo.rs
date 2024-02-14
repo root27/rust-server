@@ -8,6 +8,9 @@ use mongodb::results::DeleteResult;
 use mongodb::{bson::{doc, extjson::de::Error}, results::{InsertOneResult, UpdateResult}, Client, Collection};
 use mongodb::bson::oid::ObjectId;
 
+
+use futures::stream::StreamExt;
+
 pub struct MongoRepo {
     col: Collection<User>
 }
@@ -55,6 +58,28 @@ impl MongoRepo {
         Ok(user.unwrap())
 
 
+
+    }
+
+
+    pub async fn get_all(&self) -> Result<Vec<User>, Error> {
+
+        let mut cursor = self.col.find(None, None).await;
+
+
+        let users = Vec::new();
+
+
+        while let Some(doc) = cursor.next().await {
+
+            users.push(doc)
+            
+        }
+
+        
+
+
+        Ok(users)
 
     }
 

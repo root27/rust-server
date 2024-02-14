@@ -1,10 +1,17 @@
 # Rust Server
 
-This is basic actix web server implementation using Rust
+This is basic actix web server implementation using Rust. It includes CRUD operations using MongoDB.
 
-## Includes
 
-- Actix Web
-- Serde (JSON)
-- MongoDB
-- REST API (Create user and get user by name)
+## How to run
+
+```bash
+
+cargo run 
+
+```
+
+### API Endpoints
+
+
+
