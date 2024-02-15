@@ -124,6 +124,7 @@ async fn main() -> std::io::Result<()> {
             .route("/get_user/{name}", web::get().to(get_user))
             .route("/update_user/{id}", web::post().to(update_user))
             .route("/delete/{id}",web::get().to(delete_user))
+            .route("/get_all", web::get().to(get_all))
            
     })
     .bind(("127.0.0.1", 8080))?

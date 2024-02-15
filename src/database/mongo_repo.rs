@@ -66,7 +66,7 @@ impl MongoRepo {
 
     pub async fn get_all(&self) -> Result<Vec<User>, Box<dyn StdError>> {
 
-        let mut cursor = self.col.find(None, None).await;
+        let cursor = self.col.find(None, None).await;
 
 
         let mut users = Vec::new();
